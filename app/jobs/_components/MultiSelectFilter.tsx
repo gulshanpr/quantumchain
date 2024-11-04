@@ -2,17 +2,18 @@ import { MultiSelect } from "@/components/MultiSelector";
 import SelectedOptionsDisplay from "./SelectedOptionsDisplay";
 
 const jobFunctionOptions = [
-  { value: "software_engineering", label: "Software Engineering" },
-  { value: "marketing_communication", label: "Marketing Communication" },
-  { value: "sales_business_dev", label: "Sales Business Dev" },
-  { value: "data_science", label: "Data Science" },
-  { value: "research_development", label: "Research Development" },
+  { value: "software_development", label: "Software Development" },
+  { value: "operations", label: "Operations" },
   { value: "product_management", label: "Product Management" },
-  { value: "design_ux", label: "Design UX" },
-  { value: "content", label: "Content" },
-  { value: "other_engineering", label: "Other Engineering" },
-  { value: "devops_infrastructure", label: "DevOps Infrastructure" },
-  { value: "accounting_finance", label: "Accounting Finance" },
+  { value: "marketing_strategy", label: "Marketing Strategy" },
+  { value: "sales_business_dev", label: "Sales Business Development" },
+  { value: "design_ux", label: "Design & UX" },
+  { value: "content_communications", label: "Content & Communications" },
+  { value: "devops_infrastructure", label: "DevOps & Infrastructure" },
+  { value: "research_development", label: "Research & Development" },
+  { value: "project_management", label: "Project Management" },
+  { value: "quality_assurance", label: "Quality Assurance" },
+  { value: "customer_service", label: "Customer Service" },
 ];
 
 const jobTypeOptions = [

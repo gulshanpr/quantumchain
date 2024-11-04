@@ -5,16 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface Job {
-  _id: string;
+  id: string;
   role: string;
-  jobType: string;
+  type: string;
   location: string;
-  hybrid: boolean;
+  hybrid: string;
   jobFunction: string;
   jobDescription: string;
-  project: string;
-  category: string;
-  image: string;
+  company: string;
+  logo: string;
 }
 
 interface JobProps {
@@ -33,9 +32,9 @@ const Card = ({ job }: JobProps) => {
       href={jobDescriptionLink}>
       <div className="flex gap-4 items-center w-full">
         <div className="w-[72px] h-[72px] relative flex items-center justify-center">
-          {job.image ? (
+          {job.logo ? (
             <Image
-              src={job.image}
+              src={job.logo}
               width={72}
               height={72}
               alt="Company logo"
@@ -48,10 +47,10 @@ const Card = ({ job }: JobProps) => {
         <div className="flex flex-1 flex-col md:flex-row justify-between gap-1">
           <div className="flex flex-col gap-1 items-start">
             <h2 className="font-semibold text-sm sm:text-lg md:text-xl">{job.role}</h2>
-            <p className="font-medium text-sm md:text-base">{job.project}</p>
+            <p className="font-medium text-sm md:text-base">{job.company}</p>
             <div className="flex gap-2 items-center">
-              {job.jobType && !excludedValues.includes(job.jobType) && (
-                <p className="text-sm text-[#70718c] font-medium">{job.jobType}</p>
+              {job.type && !excludedValues.includes(job.type) && (
+                <p className="text-sm text-[#70718c] font-medium">{job.type}</p>
               )}
             </div>
           </div>

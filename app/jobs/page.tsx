@@ -7,16 +7,15 @@ import MultiSelectFilter from "./_components/MultiSelectFilter";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Job {
-  _id: string;
+  id: string;
   role: string;
-  jobType: string;
+  type: string;
   location: string;
-  hybrid: boolean;
+  hybrid: string;
   jobFunction: string;
   jobDescription: string;
-  project: string;
-  category: string;
-  image: string;
+  company: string;
+  logo: string;
 }
 
 const JobsPage = () => {
@@ -40,16 +39,32 @@ const JobsPage = () => {
   useEffect(() => {
     const fetchAllJobs = async () => {
       let allJobs: Job[] = [];
+      let hasMore = true;
+      let cursor: string | null = null;
 
-      try {
-        const response = await fetch("/api/jobs");
-        if (response.ok) {
-          const data = await response.json();
+      while (hasMore) {
+        try {
+          const url: string = cursor
+            ? `/api/jobs?cursor=${cursor}`
+            : "/api/jobs";
 
-          allJobs = data.jobs;
+          const response = await fetch(url);
+
+          if (response.ok) {
+            const data = await response.json();
+
+            allJobs = [...allJobs, ...data.jobs];
+            allJobs = allJobs.reverse();
+            hasMore = data.hasMore;
+            cursor = data.nextCursor;
+          } else {
+            console.error("Failed to fetch jobs:", response.statusText);
+            hasMore = false;
+          }
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+          hasMore = false;
         }
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
       }
 
       setAllJobs(allJobs);
@@ -104,16 +119,17 @@ const JobsPage = () => {
     }
 
     const filtered = jobs.filter((job) => {
-      const matchesCategory = categories.length > 0 ? categories.includes(job.category) : true;
       const matchesJobFunction =
-        selectedJobFunctions.length > 0 ? selectedJobFunctions.includes(job.jobFunction) : true;
+        selectedJobFunctions.length > 0
+          ? selectedJobFunctions.includes(job.jobFunction)
+          : true;
       const matchesJobType =
         selectedJobTypes.length > 0
           ? selectedJobTypes.some((type) => {
               if (type === "Remote") {
-                return job.jobType === "Remote" && job.hybrid === false;
+                return job.type === "Remote" && job.hybrid === "False";
               } else {
-                return job.hybrid === true;
+                return job.hybrid === "True";
               }
             })
           : true;
@@ -126,7 +142,7 @@ const JobsPage = () => {
         : true;
 
       return (
-        matchesCategory && matchesJobFunction && matchesJobType && matchesLocation && matchesTitle
+        matchesJobFunction && matchesJobType && matchesLocation && matchesTitle
       );
     });
 
@@ -150,70 +166,13 @@ const JobsPage = () => {
       searchLocation,
       searchTitle
     );
-  }, [selectedJobFunction, selectedJobType, activeCategories, searchLocation, searchTitle]);
-
-  const fakeData = [
-    {
-      _id: "1",
-      role: "Frontend Developer",
-      jobType: "Full-time",
-      location: "New York, NY",
-      hybrid: true,
-      jobFunction: "Development",
-      jobDescription: "",
-      project: "Smart Web Solutions",
-      category: "Operator",
-      image: "",
-    },
-    {
-      _id: "2",
-      role: "Backend Engineer",
-      jobType: "Part-time",
-      location: "San Francisco, CA",
-      hybrid: false,
-      jobFunction: "Engineering",
-      jobDescription: "",
-      project: "Data Insights Corp",
-      category: "AVS",
-      image: "",
-    },
-    {
-      _id: "3",
-      role: "Data Scientist",
-      jobType: "Contract",
-      location: "Remote",
-      hybrid: false,
-      jobFunction: "Research",
-      jobDescription: "",
-      project: "AI Innovations",
-      category: "EigenDA",
-      image: "",
-    },
-    {
-      _id: "4",
-      role: "Product Manager",
-      jobType: "Full-time",
-      location: "Los Angeles, CA",
-      hybrid: true,
-      jobFunction: "Management",
-      jobDescription: "",
-      project: "Creative Labs",
-      category: "AVS",
-      image: "",
-    },
-    {
-      _id: "5",
-      role: "UI/UX Designer",
-      jobType: "Internship",
-      location: "Austin, TX",
-      hybrid: false,
-      jobFunction: "Design",
-      jobDescription: "",
-      project: "Design Studio",
-      category: "Operator",
-      image: "",
-    },
-  ];
+  }, [
+    selectedJobFunction,
+    selectedJobType,
+    activeCategories,
+    searchLocation,
+    searchTitle,
+  ]);
 
   return (
     <main className="pb-10 mx-auto" id="job-dashboard">
@@ -249,11 +208,12 @@ const JobsPage = () => {
           ) : (
             <>
               <p className="text-sm text-white">
-                Showing <span className="font-bold">{filteredjobs.length}</span> jobs
+                Showing <span className="font-bold">{filteredjobs.length}</span>{" "}
+                jobs
               </p>
               <div className="flex flex-col gap-3">
-                {fakeData.map((job) => (
-                  <Card key={job.role} job={job} />
+                {filteredjobs.map((job) => (
+                  <Card key={job.id} job={job} />
                 ))}
               </div>
             </>

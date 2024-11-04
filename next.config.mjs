@@ -13,7 +13,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'eigenjobs.s3.amazonaws.com',
+        hostname: 'eigenjobs.s3.us-east-1.amazonaws.com',
         pathname: '/**',
       },
     ],
